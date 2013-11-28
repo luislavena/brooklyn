@@ -1,0 +1,3 @@
+module Brooklyn
+  VERSION = "0.0.1"
+end
