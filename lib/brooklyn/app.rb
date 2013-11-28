@@ -32,6 +32,7 @@ module Brooklyn
         stack.map(path, &block)
       end
 
+      # FIXME: this is not properly inheriting the parent instance
       def request_scope_klass
         super_klass = defined?(super) ? super : RequestScope
         @@request_scope_klass ||= Class.new(super_klass)
