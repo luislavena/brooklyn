@@ -7,10 +7,17 @@ require "brooklyn/route_set"
 module Brooklyn
   class App
     class << self
+      attr_accessor :request_scope_klass
+
       %w(DELETE GET HEAD OPTIONS PATCH POST PUT).each do |verb|
         define_method(verb.downcase) { |path, &block|
           route_set.add verb, path, &block
         }
+      end
+
+      def inherited(klass)
+        super_klass = self.request_scope_klass || RequestScope
+        klass.request_scope_klass = Class.new(super_klass)
       end
 
       alias_method :_new, :new
@@ -30,12 +37,6 @@ module Brooklyn
 
       def map(path, &block)
         stack.map(path, &block)
-      end
-
-      # FIXME: this is not properly inheriting the parent instance
-      def request_scope_klass
-        super_klass = defined?(super) ? super : RequestScope
-        @@request_scope_klass ||= Class.new(super_klass)
       end
 
       def route_set
